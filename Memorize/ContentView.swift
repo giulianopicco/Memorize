@@ -9,7 +9,13 @@ import SwiftUI
 
 struct ContentView: View {
 //    let emojis: [String] = ["😀", "🎃", "👻", "🕷️"] // Another way to define the array
-    let emojis: Array<String> = ["😀", "🎃", "👻", "🕷️", "😈", "👺","😀", "🎃", "👻", "🕷️", "😈", "👺"]
+    let emojis = [
+        "halloween":["😀", "🎃", "👻", "🕷️", "😈", "👺","😀", "🎃", "👻", "🕷️", "😈", "👺"],
+        "vehicles":["🚗", "🚀", "🚁", "⛴️", "🛩️", "🚂"]
+    ]
+    
+    @State var theme: String = "halloween"
+    
     
     @State var cardCount: Int = 4
     
@@ -17,58 +23,60 @@ struct ContentView: View {
 
     var body: some View {
         VStack{
+            Text("Memorize")
+                .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
             ScrollView {
                 cards
             }
                 Spacer()
-                cardAjusters
+                themeChooser
         }
         
         .padding()
         
     }
     
-    var cardAjusters: some View {
+    var themeChooser: some View {
         HStack {
-            removeButton
-            Spacer()
-            addButton
+            ThemeVehicles
+            ThemeHalloween
         }
     }
     
     var cards: some View {
         LazyVGrid(columns: [GridItem(), GridItem(), GridItem()]) {
             ForEach(0..<cardCount, id: \.self) { index in
-                Card(isFaceUp: true, textContent: emojis[index])
+                Card(isFaceUp: false, textContent: emojis[theme]![index])
                     .aspectRatio(2/3, contentMode: .fit)
             }
             
         }
-        .foregroundColor(Color.orange)
+        .foregroundColor(Color.red)
     }
     
-    func cardAjuster(by offset: Int, symbol: String, isEnable: Bool) -> some View {
+    func themeChoose(_theme: String, symbol: String) -> some View {
         Button(action: {
-            cardCount += offset
+            theme = _theme
         },
         label: {
             Image(systemName: symbol)
         })
         .font(.largeTitle)
-        .disabled(isEnable)
+        
     }
     
-    var addButton: some View {
-        cardAjuster(by: 1, symbol: "rectangle.stack.badge.plus.fill", isEnable: cardCount >= emojis.count)
+    var ThemeVehicles: some View {
+        themeChoose(_theme: "vehicles", symbol: "car.side")
     }
     
-    var removeButton: some View {
-        cardAjuster(by: -1, symbol: "rectangle.stack.badge.minus.fill", isEnable: cardCount < 2)
+    var ThemeHalloween: some View {
+        themeChoose(_theme: "halloween", symbol: "ladybug")
     }
+
 }
 
 struct Card: View {
-    @State var isFaceUp = false
+    @State var isFaceUp = true
     var textContent: String = ""
     let baseRectangle = RoundedRectangle(cornerRadius: 25.0)
     var body: some View {
