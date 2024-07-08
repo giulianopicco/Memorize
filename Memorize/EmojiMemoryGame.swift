@@ -14,11 +14,11 @@ class EmojiMemoryGame: ObservableObject {
 //    private static let emojis = ["😀", "🎃", "👻", "🕷️", "😈", "👺","😀", "🎃", "👻", "🕷️", "😈", "👺"]
     
     @Published private var model: MemoryGame<String>
-    var theme = themes.randomElement()!
+    var theme = themes[0]
     
     init() {
         model = EmojiMemoryGame.createMemoryGame(theme: theme)
-        model.shuffle()
+//        model.shuffle()
     }
     
     
@@ -49,9 +49,9 @@ class EmojiMemoryGame: ObservableObject {
     }
     
     func reset() {
-        theme = themes.randomElement()!
+        theme = themes[0]
         model = EmojiMemoryGame.createMemoryGame(theme: theme)
-        model.shuffle()
+//        model.shuffle()
     }
     
     func choose(_ card: MemoryGame<String>.Card) {

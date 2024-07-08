@@ -12,21 +12,12 @@ import SwiftUI
 struct EmojiMemoryGameView: View {
     @ObservedObject var modelView: EmojiMemoryGame
     
-    let rows = [GridItem(.fixed(30)), GridItem(.fixed(30))]
+    private let cardAspectRatio: CGFloat = 2/3
     
     var body: some View {
         VStack{
-            Text("Memorize!")
-                .font(.title)
-            
-            Text(modelView.theme.name)
-                .font(.headline)
-                .foregroundColor(modelView.theme.color)
-            Text("Score: \(modelView.score)")
-            ScrollView {
-                cards
-                    .animation(.default, value: modelView.cards)
-            }
+            cards
+                .animation(.default, value: modelView.cards)
             Button("Shuffle") {
                 modelView.shuffle()
             }
@@ -34,26 +25,25 @@ struct EmojiMemoryGameView: View {
                 modelView.reset()
             }
         }
+        .padding()
         
     }
     
-    
-    var cards: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 85), spacing: 0)], spacing: 0) {
-            ForEach(modelView.cards) { card in
-                Card(card)
-                    .aspectRatio(2/3, contentMode: .fit)
-                    .padding(4)
-                    .onTapGesture {
-                        modelView.choose(card)
-                    }
-                    .animation(.linear, value: modelView.cards)
-            }
+    @ViewBuilder
+    private var cards: some View {
+        AspectVGrid(modelView.cards, aspectRatio: cardAspectRatio) { card in
+            Card(card)
+                .padding(4)
+                .onTapGesture {
+                    modelView.choose(card)
+                }
+                .animation(.linear, value: modelView.cards)
         }
         .foregroundColor(modelView.theme.color)
     }
-    
 }
+
+
 
 struct Card: View {
     let card: MemoryGame<String>.Card
